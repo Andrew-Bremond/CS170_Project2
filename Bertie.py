@@ -23,7 +23,7 @@ class Bertie:
         selected_features = np.argsort(s)[::-1][:self.num_features]
         return [features[i] for i in selected_features]
 
-    def solve_backward_selection(self):
+    def solve_bertie(self):
         initial_node = Node(subset=self.best_features, accuracy=self.calculate_accuracy())
         print(f'Using all features and "random" evaluation, I get an accuracy of {initial_node.accuracy:.1f}%')
         print('Beginning search.')

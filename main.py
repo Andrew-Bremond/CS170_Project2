@@ -1,3 +1,4 @@
+import numpy as np
 from ForwardSelection import ForwardSelection
 from BackwardsSelection import BackwardSelection
 from Bertie import Bertie
@@ -15,15 +16,20 @@ def beginningInput():
     return total_features, choice 
 
 def main():
-    initial_state, choice = beginningInput()
+    total_features, choice = beginningInput()
+
+    num_samples = 100  # Number of samples Replace once data is available
+    num_features = 10  # Number of features Replace once data is available
+    data_matrix = np.random.rand(num_samples, num_features) # Random data matrix Replace once data is available
+    
     if choice == '1': 
-        forward = ForwardSelection(initial_state)
+        forward = ForwardSelection(total_features)
         forward.solve_forward_selection()
     elif choice == '2':
-        backwards = BackwardSelection(initial_state)
+        backwards = BackwardSelection(total_features)
         backwards.solve_backward_selection()
     elif choice == '3':
-        bertie = Bertie(initial_state)
+        bertie = Bertie(total_features, data_matrix)
         bertie.solve_bertie()
     else:
         print("Invalid choice. Please enter 1, 2, or 3.")
