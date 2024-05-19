@@ -1,4 +1,6 @@
 from ForwardSelection import ForwardSelection
+from BackwardsSelection import BackwardSelection
+from Bertie import Bertie
 
 def beginningInput():
     print("Welcome to Bertie Wooster's Feature Selection Algorithm.")
@@ -18,9 +20,11 @@ def main():
         forward = ForwardSelection(initial_state)
         forward.solve_forward_selection()
     elif choice == '2':
-        print("Backward Elimination is not yet implemented.")
+        backwards = BackwardSelection(initial_state)
+        backwards.solve_backward_selection()
     elif choice == '3':
-        print("Bertie's Special Algorithm is not yet implemented.")
+        bertie = Bertie(initial_state)
+        bertie.solve_bertie()
     else:
         print("Invalid choice. Please enter 1, 2, or 3.")
 
