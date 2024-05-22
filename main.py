@@ -3,6 +3,12 @@ from ForwardSelection import ForwardSelection
 from BackwardsSelection import BackwardSelection
 from Bertie import Bertie
 
+def load_data(file_path):
+    data = np.loadtxt(file_path)
+    labels = data[:, 0].astype(int)
+    features = data[:, 1:]
+    return features, labels
+
 def beginningInput():
     print("Welcome to Bertie Wooster's Feature Selection Algorithm.")
     total_features = int(input("Please enter total number of features: "))
@@ -18,18 +24,22 @@ def beginningInput():
 def main():
     total_features, choice = beginningInput()
 
-    num_samples = 100  # Number of samples Replace once data is available
-    num_features = 10  # Number of features Replace once data is available
-    data_matrix = np.random.rand(num_samples, num_features) # Random data matrix Replace once data is available
-    
+    # Load the data
+    data_matrix, labels = load_data('large-test-dataset-1.txt')  # or 'large-test-dataset.txt'
+
     if choice == '1': 
         forward = ForwardSelection(total_features)
+        forward.data_matrix = data_matrix
+        forward.labels = labels
         forward.solve_forward_selection()
     elif choice == '2':
-        backwards = BackwardSelection(total_features)
-        backwards.solve_backward_selection()
+        backward = BackwardSelection(total_features)
+        backward.data_matrix = data_matrix
+        backward.labels = labels
+        backward.solve_backward_selection()
     elif choice == '3':
         bertie = Bertie(total_features, data_matrix)
+        bertie.labels = labels
         bertie.solve_bertie()
     else:
         print("Invalid choice. Please enter 1, 2, or 3.")
