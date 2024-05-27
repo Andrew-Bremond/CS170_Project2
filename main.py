@@ -13,9 +13,9 @@ def load_data(file_path="small-test-dataset-1.txt"):
     with open(file_path, 'r') as file:
         for row in file:
             row = row.strip().split()
-            if row:  # Ensure the row is not empty
+            if row:
                 try:
-                    class_val = int(float(row[0]))  # Ensure class_val is an integer
+                    class_val = int(float(row[0])) 
                     feature_vals = [float(val) for val in row[1:]]
                     labels.append(class_val)
                     data.append(feature_vals)
@@ -25,17 +25,15 @@ def load_data(file_path="small-test-dataset-1.txt"):
 
     data = np.array(data)
     labels = np.array(labels)
-
     if data.size == 0:
         raise ValueError("No data loaded. Please check the input file.")
 
-    # Normalize the data
+    # normalize
     mean = np.mean(data, axis=0)
     std = np.std(data, axis=0)
     if np.any(std == 0):
         print("Warning: Some features have zero standard deviation.")
-    std[std == 0] = 1  # Prevent division by zero
-
+    std[std == 0] = 1 
     data = (data - mean) / std
 
     return data, labels
@@ -53,26 +51,19 @@ def beginning_input():
     return choice, features
 
 def main():
-    start_time = time.time()  # Start time measurement
-    
+    start_time = time.time()
     choice, features = beginning_input()
 
-    # Index data from 0 
-    features = [f-1 for f in features]  
+    features = [f-1 for f in features]  # index data from 0 
 
-    # Load the data
-    data_matrix, labels = load_data('small-test-dataset-1.txt')  # Using small dataset
-
-    # Create classifier and validator
+    data_matrix, labels = load_data('large-test-dataset-1.txt')  # use large or small dataset
     classifier = Classifier()
     validator = Validator(classifier, data_matrix, labels)
-
-    # Compute accuracy using the provided features
     accuracy = validator.leave_one_out_cross_validation(features)
     features = [f+1 for f in features]
     print(f'Accuracy using features {features}: {accuracy:.2f}')
 
-    end_time = time.time()  # End time measurement
+    end_time = time.time()  
     execution_time = end_time - start_time
     print(f"Execution time: {execution_time:.2f} seconds")
 
