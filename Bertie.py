@@ -1,32 +1,26 @@
 import random
 import heapq
 import numpy as np
-from Node import Node  # Import the Node class
+import time
+from Node import Node
 from Validator import Validator
 
 class Bertie:
-    def __init__(self, num_features, data_matrix):
-        self.num_features = num_features
+    def __init__(self, data_matrix, labels):
         self.data_matrix = data_matrix
+        self.labels = labels
+        self.num_features = data_matrix.shape[1]
         self.best_accuracy = 0
-        self.best_features = list(range(1, num_features + 1))
-        self.previous_accuracy = 0  # Track the previous accuracy to check for warnings
-        self.visited = set()  # Set to track visited nodes
-
-    def calculate_accuracy(self):
-        # Simulating accuracy calculation with a random value
-        return random.uniform(0, 1) * 100
-
-    def svd_feature_selection(self, features):
-        # Perform Singular Value Decomposition (SVD) on the data matrix
-        U, s, Vt = np.linalg.svd(self.data_matrix[:, features], full_matrices=False)
-        # Select features based on the highest singular values
-        selected_features = np.argsort(s)[::-1][:self.num_features]
-        return [features[i] for i in selected_features]
+        self.best_features = list(range(self.num_features))
+        self.visited = set()
 
     def solve_bertie(self):
+        start_time = time.time()
+        
         initial_node = Node(subset=self.best_features, accuracy=0)
-        print('Using all features and “random” evaluation, I get an accuracy of 0%')
+        validator = Validator(self.data_matrix, self.labels)
+        initial_node.accuracy = validator.leave_one_out_cross_validation(self.best_features)
+        print(f'Using all features and “random” evaluation, I get an accuracy of {initial_node.accuracy:.2f}%')
         print('Beginning search.')
 
         frontier = []
@@ -46,22 +40,22 @@ class Bertie:
                 if new_subset_frozenset in self.visited:
                     continue
 
-                selected_features = self.svd_feature_selection(new_subset)
-                validator = Validator(self.data_matrix, self.labels)
-                accuracy = validator.leave_one_out_cross_validation(selected_features)
-                new_node = Node(subset=selected_features, parent=current, accuracy=accuracy)
+                accuracy = validator.leave_one_out_cross_validation(new_subset)
+                new_node = Node(subset=new_subset, parent=current, accuracy=accuracy)
                 heapq.heappush(frontier, (-accuracy, new_node))
                 self.visited.add(new_subset_frozenset)
 
-                feature_set = set(selected_features)
+                feature_set = set(new_subset)
                 print(f'Using feature(s) {feature_set} accuracy is {accuracy:.2f}%')
                 if accuracy > self.best_accuracy:
                     self.best_accuracy = accuracy
-                    self.best_features = selected_features
+                    self.best_features = new_subset
                     print(f'Feature set {set(self.best_features)} was best, accuracy is {self.best_accuracy:.2f}%')
 
+        end_time = time.time()
         print('Finished search!!')
         print(f'The best feature subset is {set(self.best_features)}, which has an accuracy of {self.best_accuracy:.2f}%')
+        print(f'Execution time: {end_time - start_time:.2f} seconds')
         return self.get_solution_path()
 
     def get_solution_path(self):
