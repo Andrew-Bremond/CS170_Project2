@@ -41,7 +41,7 @@ def load_data(file_path="small-test-dataset-1.txt"):
     return data, labels
 
 def beginning_input():
-    print("Welcome to Bertie Wooster's Feature Selection Algorithm.")
+    print("Welcome to Bertie Wooster's Feature Selection Algorithm! by jgonz671, abrem005, and dcoel003.")
     print("Type the number of the algorithm you want to run.")
     print("1. Forward Selection")
     print("2. Backward Elimination")
@@ -57,8 +57,11 @@ def main():
     
     choice, features = beginning_input()
 
+    # Index data from 0 
+    features = [f-1 for f in features]  
+
     # Load the data
-    data_matrix, labels = load_data('large-test-dataset-1.txt')  # or 'small-test-dataset.txt'
+    data_matrix, labels = load_data('small-test-dataset-1.txt')  # Using small dataset
 
     # Create classifier and validator
     classifier = Classifier()
@@ -66,6 +69,7 @@ def main():
 
     # Compute accuracy using the provided features
     accuracy = validator.leave_one_out_cross_validation(features)
+    features = [f+1 for f in features]
     print(f'Accuracy using features {features}: {accuracy:.2f}')
 
     end_time = time.time()  # End time measurement
